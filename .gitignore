@@ -1,0 +1,9 @@
+# Any Intellij Config
+.idea/*
+*.iml
+
+# Artifacts
+out/*
+
+# Either Manifest
+*.MF
