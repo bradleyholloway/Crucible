@@ -12,4 +12,9 @@ public class Damage {
         this.energyPenetration = energyPenetration;
         this.physicalPenetration = physicalPenetration;
     }
+    public int calcDamage(double physArmour, double energyArmour) {
+        int physComponent = (int) (physicalDamage / (Math.max(physArmour-physicalPenetration, 1)));
+        int energyComponent = (int) (energyDamage / (Math.max(energyArmour-energyPenetration, 1)));
+        return physComponent + energyComponent;
+    }
 }

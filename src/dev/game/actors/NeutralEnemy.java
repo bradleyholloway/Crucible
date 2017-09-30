@@ -6,24 +6,15 @@ import dev.game.map.Tile;
 import dev.game.mechanics.Faction;
 import dev.manager.GameWindow;
 
-public class NeutralEnemy implements MapItem {
-    @Override
-    public void update(GameWindow gw, CameraFocus cam) {
+import java.awt.*;
 
+public abstract class NeutralEnemy extends Actor{
+    public NeutralEnemy() {
+        super(Faction.Neutral);
     }
 
     @Override
     public boolean isTargetable(Faction byFaction) {
         return (byFaction!=Faction.Neutral);
-    }
-
-    @Override
-    public boolean blocksLineOfSight() {
-        return false;
-    }
-
-    @Override
-    public Tile location() {
-        return null;
     }
 }

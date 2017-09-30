@@ -10,6 +10,7 @@ public class Tile {
 
     private int i;
     private int j;
+    private Point center;
 
     private boolean currentlySelected;
     private boolean hovered;
@@ -29,11 +30,12 @@ public class Tile {
     }
 
     public void update(GameWindow gw, CameraFocus cam, Rectangle onScreen) {
-        boolean offset = j%2 == 1;
-
-        hex = makeHexagon(
-                (int) (i * Math.sqrt(3) * sideLength + cam.getX() + ((offset) ? sideLength * Math.sqrt(3)/2 : 0)),
+        boolean offset = j % 2 == 1;
+        center = new Point(
+                (int) (i * Math.sqrt(3) * sideLength + cam.getX() + ((offset) ? sideLength * Math.sqrt(3) / 2 : 0)),
                 (int) (j * sideLength * 1.5) + cam.getY());
+        hex = makeHexagon();
+
     }
 
     public boolean contains(Point p) {
@@ -41,9 +43,12 @@ public class Tile {
     }
 
     public void draw(GameWindow gw, CameraFocus cam, Rectangle onScreen) {
-        if (hex.intersects(onScreen)) {
-            if (currentlySelected){
+        if (onScreen(onScreen)) {
+            if (currentlySelected) {
                 gw.graphics.setColor(Color.RED);
+                if (mapItem != null) {
+                    mapItem.drawInfo(gw);
+                }
             } else if (hovered) {
                 gw.graphics.setColor(Color.BLUE);
                 hovered = false;
@@ -52,7 +57,21 @@ public class Tile {
             }
 
             gw.graphics.drawPolygon(hex);
+
+            if (this.mapItem != null) {
+                this.mapItem.draw(gw, cam, center);
+            }
+
         }
+    }
+
+
+    public boolean onScreen(Rectangle screen) {
+        return hex.intersects(screen);
+    }
+
+    public Point getLocation() {
+        return new Point(i, j);
     }
 
     public void hover() {
@@ -67,10 +86,18 @@ public class Tile {
         this.currentlySelected = false;
     }
 
-    private Polygon makeHexagon(int x, int y) {
+    public void setMapItem(MapItem item) {
+        this.mapItem = item;
+    }
+
+    public MapItem getMapItem() {
+        return this.mapItem;
+    }
+
+    private Polygon makeHexagon() {
         Polygon hexagon = new Polygon();
         for (double ang = 0; ang < 2 * Math.PI; ang += Math.PI / 3) {
-            Point p = getPoint(x, y, ang);
+            Point p = getPoint(center.x, center.y, ang);
             hexagon.addPoint(p.x, p.y);
         }
         return hexagon;
